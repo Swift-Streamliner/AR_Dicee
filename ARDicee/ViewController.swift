@@ -38,11 +38,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.autoenablesDefaultLighting = true
     }
     
-    private func createDice() {
+    private func createDice(position: SCNVector3) {
         // Create a new scene
         let scene = SCNScene(named: "art.scnassets/diceCollada.scn")!
         guard let diceNode = scene.rootNode.childNode(withName: "Dice", recursively: true) else { return }
-        diceNode.position = SCNVector3(x:0, y:0, z: -0.1)
+        diceNode.position = SCNVector3(
+            x: position.x,
+            y: position.y + diceNode.boundingSphere.radius,
+            z: position.z)
         
         
         // Set the scene to the view
@@ -81,6 +84,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 print("No surface found!")
                 return
             }
+            createDice(position: SCNVector3(x: hitTestResult.worldTransform.columns.3.x,
+                                            y: hitTestResult.worldTransform.columns.3.y,
+                                            z: hitTestResult.worldTransform.columns.3.z))
         }
     }
     
